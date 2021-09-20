@@ -1,10 +1,11 @@
 package by.atm.domain;
 
+import java.util.Map;
 import java.util.Set;
 
 public class Atm {
     private int balance;
-    private Set<String> cards;
+    private Map<String, Card> cards;
 
     public Atm() {
 
@@ -18,11 +19,11 @@ public class Atm {
         this.balance = balance;
     }
 
-    public Set<String> getCards() {
+    public Map<String, Card> getCards() {
         return cards;
     }
 
-    public void setCards(Set<String> cards) {
+    public void setCards(Map<String, Card> cards) {
         this.cards = cards;
     }
 
