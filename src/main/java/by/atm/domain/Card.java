@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 
 public class Card {
     private String number;
-    private int pin;
+    private String pin;
     private int balance;
     private LocalDateTime lockingDate;
 
     public static class Builder {
 
         private String number;
-        private int pin;
+        private String pin;
         private int balance;
         private LocalDateTime lockingDate;
 
@@ -20,7 +20,7 @@ public class Card {
             return this;
         }
 
-        public Builder withPin(int pin) {
+        public Builder withPin(String pin) {
             this.pin = pin;
             return this;
         }
@@ -44,7 +44,7 @@ public class Card {
 
     }
 
-    public Card(String number, Integer pin, Integer balance, LocalDateTime lockingDate) {
+    public Card(String number, String pin, Integer balance, LocalDateTime lockingDate) {
         this.number = number;
         this.pin = pin;
         this.balance = balance;
@@ -59,11 +59,11 @@ public class Card {
         this.number = number;
     }
 
-    public int getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public void setPin(int pin) {
+    public void setPin(String pin) {
         this.pin = pin;
     }
 

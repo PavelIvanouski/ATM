@@ -1,5 +1,6 @@
 package by.atm.domain;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -41,21 +42,22 @@ public class Atm {
         //deserialization
         Card.Builder builder1 = new Card.Builder();
         builder1.withNumber("1111-1111-1111-1111");
-        builder1.withPin(1111);
+        builder1.withPin("1111");
         builder1.withBalance(100000);
         Card card1 = builder1.build();
 
         Card.Builder builder2 = new Card.Builder();
         builder2.withNumber("2222-2222-2222-2222");
-        builder2.withPin(2222);
+        builder2.withPin("2222");
         builder2.withBalance(200000);
         Card card2 = builder2.build();
 
         Card.Builder builder3 = new Card.Builder();
         builder3.withNumber("3333-3333-3333-3333");
-        builder3.withPin(3333);
+        builder3.withPin("3333");
         builder3.withBalance(300000);
         Card card3 = builder3.build();
+        card3.setLockingDate(LocalDateTime.now());
 
 //        Atm atm = new Atm();
         this.setBalance(11000000);
@@ -80,7 +82,7 @@ public class Atm {
             Map<String, Card> amtCards = this.getCards();
             if (validateCardNumber(enteredData, amtCards)) {
                 System.out.println("1");
-                checkPIN(amtCards.get(enteredData),scanner);
+                checkCard(amtCards.get(enteredData), scanner);
             } else if (!enteredData.equals("x")) {
                 System.out.println("Invalid data! Try again.");
             }
@@ -121,8 +123,29 @@ public class Atm {
         return cardNumber.matches(regex) && amtCards.containsKey(cardNumber);
     }
 
-    public void checkPIN(Card card, Scanner scanner) {
+    public void checkCard(Card card, Scanner scanner) {
         String enteredData = "";
+        if (card.getLockingDate() != null) {
+            System.out.println("Card " + card.getNumber() + " is blocked. Try later.");
+            return;
+        }
+        for (int attempt = 3; attempt > 0; attempt--) {
+            System.out.println("Please, enter PIN...(Number of attempts: " + attempt + " )");
+            enteredData = scanner.nextLine();
+            if (card.getPin().equals(enteredData.trim())) {
+                System.out.println("Correct PIN entered!");
+                //transaction
+                break;
+            } else {
+                if (attempt == 1) {
+                    card.setLockingDate(LocalDateTime.now());
+                    System.out.println("Card " + card.getNumber() + " is blocked. Try later.");
+                } else {
+                    System.out.println("Invalid PIN entered!");
+                }
+            }
+        }
+
 
     }
 
