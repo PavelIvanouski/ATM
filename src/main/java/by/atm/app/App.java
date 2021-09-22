@@ -9,10 +9,9 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-
         Atm atm = new Atm();
         atm.startAtm();
+        atm.enterCard();
         atm.turnOffAtm();
-
     }
 }

@@ -1,18 +1,20 @@
 package by.atm.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Card {
+public class Card implements Serializable {
     private String number;
     private String pin;
-    private int balance;
+    private double balance;
     private LocalDateTime lockingDate;
+    private static final long serialVersionUID = 1L;
 
     public static class Builder {
 
         private String number;
         private String pin;
-        private int balance;
+        private double balance;
         private LocalDateTime lockingDate;
 
         public Builder withNumber(String number) {
@@ -25,7 +27,7 @@ public class Card {
             return this;
         }
 
-        public Builder withBalance(int balance) {
+        public Builder withBalance(double balance) {
             this.balance = balance;
             return this;
         }
@@ -44,7 +46,7 @@ public class Card {
 
     }
 
-    public Card(String number, String pin, Integer balance, LocalDateTime lockingDate) {
+    public Card(String number, String pin, double balance, LocalDateTime lockingDate) {
         this.number = number;
         this.pin = pin;
         this.balance = balance;
@@ -67,11 +69,11 @@ public class Card {
         this.pin = pin;
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
