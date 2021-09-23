@@ -19,6 +19,12 @@ Additionally*
 - pin code can be entered incorrectly 3 times, after which the card must be blocked;
 - card blocking is removed automatically after 24 hours.
 
+## Tech
+
+- Project SDK: 11 java version;
+- Project language level: 11 ;
+
+
 
 
 
