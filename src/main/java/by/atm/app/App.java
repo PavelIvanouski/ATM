@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         Atm atm;
+        System.out.println("Welcome to Vacanda-bank");
         try {
             atm = Atm.startAtm();
         } catch (AtmLoadException e) {
