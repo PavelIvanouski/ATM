@@ -1,23 +1,22 @@
 package by.atm.domain;
 
+import by.atm.exceptions.AtmLoadException;
 import by.atm.util.DateUtil;
 import by.atm.util.SerializationUtil;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Atm implements Serializable {
     private static Scanner scanner;
     private double balance;
     private Map<String, Card> cards;
+    private static final double DEPOSIT_MAX_BOUND = 1000000.0;
     private static final long serialVersionUID = 1L;
 
     public Atm() {
-
+        scanner = new Scanner(System.in);
     }
 
     public double getBalance() {
@@ -44,17 +43,20 @@ public class Atm implements Serializable {
                 '}';
     }
 
-    public void startAtm() {
-        System.out.println("Welcome to Vacanda-bank Atm");
-        //deserialization
-
+    public static Atm startAtm() throws AtmLoadException {
         Object deserializedObject = SerializationUtil.deserializeObject(SerializationUtil.FILENAME);
-        Atm test = new Atm();
+        Atm atm = new Atm();
         if (deserializedObject instanceof Atm) {
-             test = (Atm) deserializedObject;
+            atm = (Atm) deserializedObject;
             System.out.println("Atm info loaded.");
         }
+        if ((atm.getBalance() == 0) || (atm.getCards() == null)) {
+            throw new AtmLoadException("Atm load failed!");
+        }
+        return atm;
+    }
 
+    public static Atm startAtmManually() {
         Card.Builder builder1 = new Card.Builder();
         builder1.withNumber("1111-1111-1111-1111");
         builder1.withPin("1111");
@@ -72,34 +74,15 @@ public class Atm implements Serializable {
         builder3.withPin("3333");
         builder3.withBalance(3000);
         Card card3 = builder3.build();
-        card3.setLockingDate(LocalDateTime.now().minusDays(1));
 
-//        Atm atm = new Atm();
-        this.setBalance(100000);
-//        atm.setBalance(11000000);
+        Atm atm = new Atm();
+        atm.setBalance(1000000);
         Map<String, Card> cardMap = new HashMap<>();
         cardMap.put(card1.getNumber(), card1);
         cardMap.put(card2.getNumber(), card2);
         cardMap.put(card3.getNumber(), card3);
-        this.setCards(cardMap);
-//        atm.setCards(cardMap);
-//        return atm;
-//        enterCard();
-    }
-
-    public void enterCard() {
-        scanner = new Scanner(System.in);
-        String enteredData = "";
-        while (!enteredData.equals("x")) {
-            System.out.println("Please, enter card number... (\'x\' to close the app)");
-            enteredData = scanner.nextLine();
-            Map<String, Card> amtCards = this.getCards();
-            if (validateCardNumber(enteredData, amtCards)) {
-                authorize(amtCards.get(enteredData));
-            } else if (!enteredData.equals("x")) {
-                System.out.println("Invalid data! Try again.");
-            }
-        }
+        atm.setCards(cardMap);
+        return atm;
     }
 
     public boolean validateCardNumber(String cardNumber, Map<String, Card> amtCards) {
@@ -107,20 +90,21 @@ public class Atm implements Serializable {
         return cardNumber.matches(regex) && amtCards.containsKey(cardNumber);
     }
 
-    public void authorize(Card card) {
+    public boolean authorize(Card card) {
         String enteredData = "";
         if ((card.getLockingDate() != null)
                 && (DateUtil.returnTwoDateDifferenceInHours(card.getLockingDate(), LocalDateTime.now()) < 24)) {
             Menu.showCardBlockingMessage(card);
-            return;
+            return false;
         }
         for (int attempt = 3; attempt > 0; attempt--) {
             System.out.println("Please, enter PIN...(Number of attempts: " + attempt + " )");
             enteredData = scanner.nextLine();
             if (card.getPin().equals(enteredData.trim())) {
                 System.out.println("Correct PIN entered!");
-                transactions(card);
-                break;
+//                transactions(card);
+                return true;
+//                break;
             } else {
                 if (attempt == 1) {
                     card.setLockingDate(LocalDateTime.now());
@@ -130,6 +114,7 @@ public class Atm implements Serializable {
                 }
             }
         }
+        return false;
     }
 
     public void transactions(Card card) {
@@ -163,8 +148,17 @@ public class Atm implements Serializable {
     }
 
     public void withdraw(Card card) {
-        System.out.println("Enter an amount to withdraw: ");
-        double amountToWithdraw = scanner.nextDouble();
+        double amountToWithdraw = 0;
+        do {
+            System.out.println("Enter an amount to withdraw (>0) : ");
+            try {
+                amountToWithdraw = scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                e.printStackTrace();
+                System.out.println("Try again.");
+                scanner.next();
+            }
+        } while (amountToWithdraw <= 0);
         scanner.nextLine();
         double currentAtmBalance = this.getBalance();
         double currentCardBalance = card.getBalance();
@@ -180,37 +174,40 @@ public class Atm implements Serializable {
         currentAtmBalance -= amountToWithdraw;
         this.setBalance(currentAtmBalance);
         card.setBalance(currentCardBalance);
-        System.out.println("Please, take your money");
+        System.out.println("The withdraw was successful.");
         showBalance(card);
     }
 
     public void deposit(Card card) {
-        System.out.println("Before");
-        System.out.println("Card balance: " + card.getBalance());
-        System.out.println("Atm balance: " + this.getBalance());
-        System.out.println("Enter an amount to deposit: ");
-        double amountToDeposit = scanner.nextDouble();
+        double amountToDeposit = 0;
+        do {
+            System.out.println("Enter an amount to deposit (>0): ");
+            try {
+                amountToDeposit = scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                e.printStackTrace();
+                System.out.println("Try again.");
+                scanner.next();
+            }
+        } while (amountToDeposit <= 0);
         scanner.nextLine();
         double currentAtmBalance = this.getBalance();
         double currentCardBalance = card.getBalance();
-        double depositMaxBound = 1000000.0;
-        if (amountToDeposit > depositMaxBound) {
-            System.out.println("Sorry! Deposit should bee less then " + depositMaxBound);
+        if (amountToDeposit > DEPOSIT_MAX_BOUND) {
+            System.out.println("Sorry! Deposit should be less then " + DEPOSIT_MAX_BOUND);
             return;
         }
         currentCardBalance += amountToDeposit;
         currentAtmBalance += amountToDeposit;
         this.setBalance(currentAtmBalance);
         card.setBalance(currentCardBalance);
-        System.out.println("After");
-        System.out.println("Card balance: " + card.getBalance());
-        System.out.println("Atm balance: " + this.getBalance());
-
+        System.out.println("The deposit was successful.");
+        showBalance(card);
     }
 
     public void turnOffAtm() {
         System.out.println("Pressed 'x'.");
-        SerializationUtil.serializeObject(this,SerializationUtil.FILENAME);
+        SerializationUtil.serializeObject(this, SerializationUtil.FILENAME);
         System.out.println("Information has been saved.");
     }
 
