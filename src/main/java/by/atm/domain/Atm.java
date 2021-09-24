@@ -13,6 +13,7 @@ public class Atm implements Serializable {
     private double balance;
     private Map<String, Card> cards;
     private static final double DEPOSIT_MAX_BOUND = 1000000.0;
+    private static String REGEX_CARD = "^(\\d{4}\\-){3}\\d{4}$";
     private static final long serialVersionUID = 1L;
 
     public Atm() {
@@ -86,8 +87,7 @@ public class Atm implements Serializable {
     }
 
     public boolean validateCardNumber(String cardNumber, Map<String, Card> amtCards) {
-        String regex = "^(\\d{4}\\-){3}\\d{4}$";
-        return cardNumber.matches(regex) && amtCards.containsKey(cardNumber);
+        return cardNumber.matches(REGEX_CARD) && amtCards.containsKey(cardNumber);
     }
 
     public boolean authorize(Card card) {
@@ -102,9 +102,7 @@ public class Atm implements Serializable {
             enteredData = scanner.nextLine();
             if (card.getPin().equals(enteredData.trim())) {
                 System.out.println("Correct PIN entered!");
-//                transactions(card);
                 return true;
-//                break;
             } else {
                 if (attempt == 1) {
                     card.setLockingDate(LocalDateTime.now());
@@ -206,7 +204,6 @@ public class Atm implements Serializable {
     }
 
     public void turnOffAtm() {
-        System.out.println("Pressed 'x'.");
         SerializationUtil.serializeObject(this, SerializationUtil.FILENAME);
         System.out.println("Information has been saved.");
     }

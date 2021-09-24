@@ -16,6 +16,7 @@ After the completion of the work, information about the ATM (ATM balance, bank c
 Additionally*
 
 - menu for application (console input);
+- start.bat file to start the application
 - pin code can be entered incorrectly 3 times, after which the card must be blocked;
 - card blocking is removed automatically after 24 hours.
 

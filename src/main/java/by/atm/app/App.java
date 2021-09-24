@@ -4,8 +4,6 @@ import main.java.by.atm.domain.Atm;
 import main.java.by.atm.domain.Card;
 import main.java.by.atm.exceptions.AtmLoadException;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -23,17 +21,22 @@ public class App {
         String enteredData = "";
         Card currentCard;
         Map<String, Card> atmCards = atm.getCards();
-        while (!enteredData.equals("x")) {
+        while (true) {
             System.out.println("Please, enter card number... (\'x\' to close the app)");
             enteredData = scanner.nextLine();
-            if (atm.validateCardNumber(enteredData, atmCards)) {
-                currentCard = atmCards.get(enteredData);
-                if (atm.authorize(currentCard)) {
-                    atm.transactions(currentCard);
-                }
-            } else if (!enteredData.equals("x")) {
-                System.out.println("Invalid data! Try again.");
+            if ("x".equals(enteredData)) {
+                System.out.println("Pressed 'x'.");
+                break;
             }
+            if (!atm.validateCardNumber(enteredData, atmCards)) {
+                System.out.println("Invalid data! Try again.");
+                continue;
+            }
+            currentCard = atmCards.get(enteredData);
+            if (!atm.authorize(currentCard)) {
+                continue;
+            }
+            atm.transactions(currentCard);
         }
         atm.turnOffAtm();
     }
