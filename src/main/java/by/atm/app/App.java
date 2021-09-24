@@ -1,8 +1,8 @@
-package by.atm.app;
+package main.java.by.atm.app;
 
-import by.atm.domain.Atm;
-import by.atm.domain.Card;
-import by.atm.exceptions.AtmLoadException;
+import main.java.by.atm.domain.Atm;
+import main.java.by.atm.domain.Card;
+import main.java.by.atm.exceptions.AtmLoadException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

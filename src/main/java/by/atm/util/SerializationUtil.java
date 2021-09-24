@@ -1,9 +1,10 @@
-package by.atm.util;
+package main.java.by.atm.util;
 
 import java.io.*;
 
 public class SerializationUtil {
-    public static final String FILENAME = "src/main/resources/serialization/atm.txt";
+//    public static final String FILENAME = "src/main/resources/serialization/atm.txt";
+    public static final String FILENAME = "atm.txt";
 
     public static void serializeObject(Object object, String filename) {
         try (FileOutputStream fileOutputStream = new FileOutputStream(filename);

@@ -1,4 +1,4 @@
-package by.atm.domain;
+package main.java.by.atm.domain;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

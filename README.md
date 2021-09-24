@@ -1,7 +1,7 @@
 # Atm console app
 Simple console application that simulates an ATM functions.
 ## Application features
-When the application is launched, data about the ATM is loaded (from txt-file) - the balance of the ATM, as well as a predefined set of bank cards:
+When the application is launched, data about the ATM is loaded (from atm.txt) - the balance of the ATM, as well as a predefined set of bank cards:
 - card 1111-1111-1111-1111 PIN 1111;
 - card 2222-2222-2222-2222 PIN 2222;
 - card 3333-3333-3333-3333 PIN 3333;
@@ -11,7 +11,7 @@ The user enters the card number (in the format XXXX-XXXX-XXXX-XXXX), pin and gai
 - cash withdrawal;
 - balance replenishment;
 
-After the completion of the work, information about the ATM (ATM balance, bank card balance) will be saved to a file
+After the completion of the work, information about the ATM (ATM balance, bank card balance) will be saved to atm.txt.
 
 Additionally*
 

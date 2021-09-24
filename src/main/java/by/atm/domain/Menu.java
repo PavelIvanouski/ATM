@@ -1,4 +1,4 @@
-package by.atm.domain;
+package main.java.by.atm.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

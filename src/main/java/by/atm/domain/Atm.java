@@ -1,8 +1,8 @@
-package by.atm.domain;
+package main.java.by.atm.domain;
 
-import by.atm.exceptions.AtmLoadException;
-import by.atm.util.DateUtil;
-import by.atm.util.SerializationUtil;
+import main.java.by.atm.exceptions.AtmLoadException;
+import main.java.by.atm.util.DateUtil;
+import main.java.by.atm.util.SerializationUtil;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

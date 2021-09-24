@@ -1,4 +1,4 @@
-package by.atm.util;
+package main.java.by.atm.util;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
